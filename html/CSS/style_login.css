@@ -1,0 +1,43 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}
+a {
+  color: white;
+  text-decoration: none;
+  font-size: 10pt;
+}
+a:hover {
+  text-decoration: underline;
+  color: white;
+}
+input {
+  border-radius: 20px;
+  margin: 10px;
+  width: 300px;
+  height: 45px;
+  border: 1px solid white;
+  font-size: 12pt;
+  padding: 10px 20px;
+  font-weight: bold;
+  background-color: rgb(255, 255, 255, 0.01);
+  color: white;
+  outline: none;
+}
+input[type="submit"] {
+  color: white;
+  background-color: #0d6efd;
+  cursor: pointer;
+}
+::-webkit-input-placeholder {
+  color: white;
+}
+:-moz-placeholder {
+  color: white;
+}
+::-moz-placeholder {
+  color: white;
+}
+:-ms-input-placeholder {
+  color: white;
+}
