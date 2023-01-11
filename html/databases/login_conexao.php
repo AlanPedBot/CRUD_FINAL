@@ -24,14 +24,14 @@ function cadastrar($nome, $telefone, $email, $senha){
 
 
     // Verifica se o usuário já está cadastrado no sistema
-    $sql = $pdo->prepare("SELECT id FROM user WHERE email =:e");
+    $sql = $pdo->prepare("SELECT id FROM users WHERE email =:e");
     $sql->bindValue(":e",$email);
     $sql->execute();
     if($sql->rowCount()>0){
         return false;
     }
     else{
-        $sql = $pdo->prepare("INSERT INTO user (nome, telefone, email, senha) VALUES(:n, :t,:e,:s)");
+        $sql = $pdo->prepare("INSERT INTO users (nome, telefone, email, senha) VALUES(:n, :t,:e,:s)");
         $sql->bindValue(":n",$nome);
         $sql->bindValue(":t",$telefone);
         $sql->bindValue(":e",$email);
@@ -42,21 +42,34 @@ function cadastrar($nome, $telefone, $email, $senha){
     }
 
 }
+// Está função realiza o login dos usuários que estão cadastrados no banco de dados
 function logar($email, $senha){
-    $pdo = conn();
-    $sql = $pdo->prepare("SELECT id FROM user WHERE email =:e AND senha = :s");
-    $sql->bindValue("e:", $email);
-    $sql->bindValue("s:", md5($senha));
+    $conexao = conn();
+    $email = addslashes($_POST['email']);
+    $entrar = addslashes($_POST['entrar']);
+    $senha = md5($_POST['senha']);
+  if (isset($entrar)) {
+    $sql = $conexao->prepare("SELECT * FROM users WHERE email =
+    :e AND senha = :s") or die("erro ao selecionar");
+    $sql->bindValue(":e", $email);
+    $sql->bindValue(":s", $senha);
     $sql->execute();
-    if($sql->rowCount() > 0){
+    if (($sql) && ($sql->rowCount()<=0)){
+        echo "<p style ='width: 350px;
+                    margin: 10px auto;
+                    padding: 10px;
+                    background-color: rgb(250, 128, 114, 0.3);
+                    border: 1px solid rgb(165, 42, 42); text-size:5pt'>Login e/ou senha incorretos!</p>";
+        die();
+      }else{
         $dado = $sql->fetch();
         session_start();
         $_SESSION['id'] = $dado['id'];
-        return true;
-    }
-    else{
-        return false;
-    }
-}
+        $_SESSION['nome'] = $dado['nome'];
+        echo"<script language='javascript' type='text/javascript'>;window.location.
+        href='../frontend/home'</script>";
+      }
+  }
+          }
 
 ?>

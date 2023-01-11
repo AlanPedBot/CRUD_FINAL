@@ -1,3 +1,4 @@
+<!-- Aqui fica o cabeçalho -->
 <header class="p-4 text-bg-dark">
     <div class="container">
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">

@@ -1,4 +1,12 @@
 <?php
+session_start();
+ob_start();
+include_once '../databases/login_conexao.php';
+// Verifica se existe algum id relacionado com o login se não houver retorna para o login
+if(!isset($_SESSION["id"]))
+{
+    header("Location: ../backend/login");
+}
 include_once('../frontend/header.php');
 include_once('../databases/conexao.php');
 $conn = conectar();
@@ -19,12 +27,13 @@ $conn = conectar();
 
 <body>
     <?php
+    // Chama a função para conectar ao banco de dados
    $conn = conectar();
-  
+  // Tras os dados dos inputs do formulário
   $i = $_POST['id'];
   $n = $_POST['name'];
   $s = $_POST['id_se'];
-  
+  // Faz a atualização dos dados setando novos valores para as variaveis 
    $up = $conn->prepare("UPDATE books SET name = :name, session_id = :se WHERE id = :id");
    $up->bindValue(":name",$n );
    $up->bindValue(":se", $s);
@@ -36,6 +45,7 @@ $conn = conectar();
         echo "<p class='fs-1' style ='color:red'>Id Inválido</p>";
     }
     ?>
+    <!-- formulario que pega as informações pelos inputs -->
     <form method="post" action="">
         <div class="mx-auto" style="margin-top: auto;">
             <h1>Edita Livros</h1>
@@ -64,25 +74,71 @@ $conn = conectar();
         </table>
     </div>
     <?php
-            $conn = conectar();
-            $num = $_GET['id'];
-            $stmt = $conn->prepare("SELECT * FROM books");
-            $stmt->execute();
-            $buscar = $stmt->fetchAll();
-            foreach ($buscar as $busca){
-            ?>
+     $conn = conectar();
+        
+        //Recebe o número da página
+        $pagina_atual = filter_input(INPUT_GET, "page", FILTER_SANITIZE_NUMBER_INT);
+        $pagina = (!empty($pagina_atual)) ? $pagina_atual : 1;
+
+        //Setar a quantidade de registros por página
+        $limite_resultado = 5;
+
+        //Calcula o inicio da visualização
+        $inicio = ($limite_resultado * $pagina) - $limite_resultado;
+
+
+        $query_usuarios = "SELECT * FROM books LIMIT $inicio, $limite_resultado";
+        $result_usuarios = $conn->prepare($query_usuarios);
+        $result_usuarios->execute();
+
+        if (($result_usuarios) AND ($result_usuarios->rowCount() != 0)) {
+            while ($row_usuario = $result_usuarios->fetch(PDO::FETCH_ASSOC)) {
+                extract($row_usuario);
+                ?>
     <table class="table table-secondary table-hover">
         <tr>
-            <td width="30%"><?php echo $busca['id']; ?></td>
-            <td width="30%"><?php echo $busca['name']; ?></td>
-            <td width="30%"><?php echo $busca['book_borrowed_id']; ?></td>
-            <td width="30%"><?php echo $busca['session_id']; ?></td>
+            <td width="30%"><?php echo $row_usuario['id']; ?></td>
+            <td width="30%"><?php echo $row_usuario['name']; ?></td>
+            <td width="30%"><?php echo $row_usuario['book_borrowed_id']; ?></td>
+            <td width="30%"><?php echo $row_usuario['session_id']; ?></td>
         </tr>
     </table>
-    </div>
     <?php
-      }
-    ?>
+            }
+
+            //Contar a quantidade de registros no banco de dados
+            $query_qnt_registros = "SELECT COUNT(id) AS num_result FROM books";
+            $result_qnt_registros = $conn->prepare($query_qnt_registros);
+            $result_qnt_registros->execute();
+            $row_qnt_registros = $result_qnt_registros->fetch(PDO::FETCH_ASSOC);
+
+            //Quantidade de página
+            $qnt_pagina = ceil($row_qnt_registros['num_result'] / $limite_resultado);
+
+            // Maximo de itens por pagina
+            $maximo_link = 2;
+
+            echo "<button type='button' class='btn btn-light'style='margin-bottom: 15px; margin-right: 3px;color:black;'><a href='delete?page=1'style='color:black;'>Primeira</a></li> </button>";
+
+            for ($pagina_anterior = $pagina - $maximo_link; $pagina_anterior <= $pagina - 1; $pagina_anterior++) {
+                if ($pagina_anterior >= 1) {
+                    echo "<button type='button' class='btn btn-light'style='margin-bottom: 15px; margin-right: 3px;color:black;'><a href='delete?page=$pagina_anterior'style='color:black;'>$pagina_anterior</a></li> </button>";
+                }
+            }
+
+            echo "<a style='color:black;'href=''>$pagina</a> ";
+
+            for ($proxima_pagina = $pagina + 1; $proxima_pagina <= $pagina + $maximo_link; $proxima_pagina++) {
+                if ($proxima_pagina <= $qnt_pagina) {
+                    echo "<button type='button' class='btn btn-light'style='margin-bottom: 15px; margin-right: 3px;color:black;'><a href='delete?page=$proxima_pagina'style='color:black;'>$proxima_pagina</a></li> </button>";
+                }
+            }
+
+            echo "<button type='button' class='btn btn-light'style='margin-bottom: 15px; margin-right: 3px;color:black;'><a href='delete?page=$qnt_pagina' style='color:black;'>Última</a> </li> </button>";
+        } else {
+            echo "<p style='color: #f00;'>Erro: Nenhum usuário encontrado!</p>";
+        }
+        ?>
 </body>
 
 </html>

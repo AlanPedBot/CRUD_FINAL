@@ -1,5 +1,7 @@
 <?php
-require_once '../databases/login_conexao.php';
+// É iniciado uma sessão 
+session_start();
+include_once '../databases/login_conexao.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,39 +16,28 @@ require_once '../databases/login_conexao.php';
     <title>LOGIN</title>
 </head>
 
-<body style="background-image: url(../images/livros1.jpg); background-position: 50% 100%;">
+<body style="background-image: url(../images/fundo1.jpg); background-position: 50% 60%;">
     <div style=" margin:150px auto 0px auto; width: 420px; text-align:center;">
         <h1>Entrar</h1>
-        <form method="POST" action="../frontend/home">
-            <input type="email" name="email" placeholder="Email" maxlength="40" required>
+        <form method="POST" action="">
+            <input type="text" name="email" placeholder="Email" maxlength="40" required>
             <input type="password" name="senha" placeholder="Senha" maxlength="15" required>
-            <input type="submit" value="ACESSAR">
+            <input type="submit" value="ACESSAR" name="entrar">
             <div>
                 <div>
-                    <a href="cadastrar.php">Ainda não está
+                    <a href="cadastrar">Ainda não está
                         cadastrado?<strong> Cadastre-se!</strong></a>
                 </div>
             </div>
         </form>
     </div>
     <?php
-    if(isset($_POST['email'])){
-            $email = addslashes($_POST['email']);
-            $senha = addslashes($_POST['senha']);
-            $con = conn();
-           
-            if(logar($email,$senha)){
-                header("location: ./frontend/home");
-            }
-            else{
-                echo "<p style ='width: 350px;
-                    margin: 10px auto;
-                    padding: 10px;
-                    background-color: rgb(250, 128, 114, 0.3);
-                    border: 1px solid rgb(165, 42, 42); text-size:5pt'>Email e/ou senha inválidos</p>";
-            }
-            
-    }
+    // Chamasse a função logar 
+    $l = logar($_POST['email'], $_POST['senha']);
+  if(isset($_SESSION['msg'])){
+    echo $_SESSION['msg'];
+    unset($_SESSION['msg']);
+  }
     ?>
 </body>
 

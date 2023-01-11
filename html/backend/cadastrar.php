@@ -1,4 +1,6 @@
 <?php
+// Inicia uma sessão
+session_start();
 require_once '../databases/login_conexao.php';
 ?>
 
@@ -15,20 +17,19 @@ require_once '../databases/login_conexao.php';
     <title>CADASTRO</title>
 </head>
 
-<body style="background-image: url(../images/livros1.jpg); background-position: 50% 90%;">
+<body style="background-image: url(../images/fundo1.jpg); background-position: 50% 60%;">
     <div style=" margin:80px auto 0px auto; width: 420px; text-align:center;">
         <h1>Cadastrar</h1>
         <form method="POST" action="">
             <input type="text" name="nome" placeholder="Nome Completo" maxlength="30" required>
             <input type="text" name="telefone" placeholder="Telefone" maxlength="30" required>
-            <input type="email" name="email" placeholder="Usuário" maxlength="40" required>
+            <input type="email" name="email" placeholder="Email" maxlength="40" required>
             <input type="password" name="senha" placeholder="Senha" maxlength="15" required>
             <input type="password" name="confSenha" placeholder="Confirme sua Senha" maxlength="15" required>
             <input type="submit" value="CADASTRAR">
             <div>
                 <div>
-                    <a href="cadastrar">Ainda não está
-                        cadastrado?<strong> Cadastre-se!</strong></a>
+                    <a href="login">Fazer login!<strong> Logar!</strong></a>
                 </div>
             </div>
         </form>
@@ -43,6 +44,7 @@ require_once '../databases/login_conexao.php';
         //Verifica se os dados estão preenchidos
 
             $cone = conn();
+            // verifica se a senha é igual ao confirmar senha
                 if($senha == $confSenha){
                     
                 if($cad = cadastrar($nome, $telefone, $email, $senha, $confSenha)){

@@ -1,4 +1,5 @@
 <?php
+// Neste arquivo é feita toda a conexão com o banco de dados books utilizando o .env e o gitignore para privar as informações do banco
 include_once '../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();

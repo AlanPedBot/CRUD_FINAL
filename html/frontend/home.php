@@ -1,9 +1,11 @@
 <?php
-
 session_start();
-if(!isset($_SESSION['id'])){
-    header('location: ../backend/login');
-    exit;
+ob_start();
+include_once '../databases/login_conexao.php';
+// Verifica se existe algum id relacionado com o login se não houver retorna para o login
+if(!isset($_SESSION["id"]))
+{
+    header("Location: ../backend/login");
 }
 include_once('../frontend/header.php');
 ?>
@@ -25,9 +27,11 @@ include_once('../frontend/header.php');
 </head>
 
 <body>
-    <a href="/backend/sair">Sair</a>
+    <div style="margin-left: 1150px; margin-top:10px;">
+        <button type="button" class="btn btn-danger"><a href="/backend/sair" style="color:white;">Sair</a></button>
+    </div>
     <div class="container col-10">
-        <h1 style="margin: 10px; right:10px;">Seja Bem Vindo!!!</h1>
+        <h1 style="margin: 10px; right:10px;">Seja Bem Vindo! <?php echo $_SESSION['nome'] ?></h1>
         <p class="lh-sm">Aqui você conseguirá fazer operações dentro de um banco de dados
             utilizando a
             biblioteca PDO(PHP Data Object) que é uma extensão da linguagem PHP para acesso a banco de dados.

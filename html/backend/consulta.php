@@ -1,4 +1,12 @@
 <?php
+session_start();
+ob_start();
+include_once '../databases/login_conexao.php';
+// Verifica se existe algum id relacionado com o login se não houver retorna para o login
+if(!isset($_SESSION["id"]))
+{
+    header("Location: ../backend/login");
+}
 include_once('../frontend/header.php');
  include_once('../databases/conexao.php');
  $conn = conectar();
@@ -21,6 +29,7 @@ include_once('../frontend/header.php');
 <body>
 
     <?php
+    // Pega o id atraves do método GET e faz a busca da informação pesquisada atraves do id
          $num = $_GET['id'];
          $stmt = $conn->prepare("SELECT * FROM books WHERE id = :id");
          $stmt->bindValue(":id", $num);
@@ -33,6 +42,7 @@ include_once('../frontend/header.php');
              echo "<p class='fs-1' style ='color:red'>Id Inválido</p>";
          }
     ?>
+    <!-- formulario que pega as informações pelos inputs -->
     <form method="get" action="">
         <div class="mx-auto" style="margin-top: auto;">
             <h1>Buscando Livros</h1>
@@ -53,7 +63,7 @@ include_once('../frontend/header.php');
             </tr>
         </table>
         <?php
-          
+          // Faz a busca de todos os registros do banco de dados 
             $buscar = $stmt->fetchAll();
             foreach ($buscar as $busca){
                 
